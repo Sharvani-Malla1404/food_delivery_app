@@ -56,6 +56,3 @@ export const withPromtedLabel = (RestaurantCard) => {
 };
 
 export default RestaurantCard;
-
-
-
