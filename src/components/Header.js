@@ -16,7 +16,7 @@ const Header = () => {
       setIsLoggedIn(false);   // Update login status
     } else {
       setIsLoggedIn(true);    
-      setUserName("Jahnavi"); // Set default username on login
+      setUserName("Sharvani"); // Set default username on login
     }
   };
 
