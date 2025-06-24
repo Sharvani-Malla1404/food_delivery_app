@@ -1,62 +1,135 @@
-import { useContext } from "react";
-import { CDN_URL } from "../utils/constants";
+import RestaurantCard, { withPromtedLabel } from "./RestaurantCard";
+import { useState, useEffect, useContext } from "react";
+import Shimmer from "./Shimmer";
+import { Link } from "react-router-dom";
+import useOnlineStatus from "../utils/useOnlineStatus";
 import UserContext from "../utils/UserContext";
 
-const RestaurantCard = (props) => {
-  const { resData } = props;
-  const { loggedInUser } = useContext(UserContext);
+const Body = () => {
+  const [listOfRestaurants, setListOfRestraunt] = useState([]);
+  const [filteredRestaurant, setFilteredRestaurant] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
-  // Add fallback/default values to avoid NaN and runtime issues
-  const {
-    cloudinaryImageId = "",
-    name = "Unknown Restaurant",
-    avgRating = "4.0",
-    cuisines = [],
-    costForTwo = 20000, // default to ₹200
-    sla = {},
-  } = resData || {};
+  const RestaurantCardPromoted = withPromtedLabel(RestaurantCard);
 
-  const imageUrl = cloudinaryImageId ? CDN_URL + cloudinaryImageId : "https://via.placeholder.com/300x200?text=No+Image";
+  const { loggedInUser, setUserName, isLoggedIn } = useContext(UserContext);
+  const onlineStatus = useOnlineStatus();
 
-  return (
-    <div
-      data-testid="resCard"
-      className="w-64 h-80 m-4 p-4 bg-gray-100 hover:bg-gray-200 rounded-lg flex flex-col justify-between shadow-md transition-transform hover:scale-105"
-    >
-      <img
-        className="w-full h-32 object-cover rounded-md mb-2"
-        alt="res-logo"
-        src={imageUrl}
-      />
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-      <div className="flex flex-col justify-between flex-1">
-        <h3 className="font-bold text-md truncate">{name}</h3>
-        <p className="text-sm text-gray-700 line-clamp-2">
-          {cuisines.length > 0 ? cuisines.join(", ") : "Various Cuisines"}
-        </p>
-        <div className="mt-2 text-sm">
-          <p>
-            ⭐ {avgRating} • ₹
-            {isNaN(costForTwo / 100) ? "200" : (costForTwo / 100).toFixed(0)} FOR TWO
-          </p>
-          <p>{sla?.deliveryTime || 30} mins</p>
-          <p className="text-gray-500 text-xs">User: {loggedInUser}</p>
+  const fetchData = async () => {
+    const data = await fetch(
+      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9351929&lng=77.62448069999999&page_type=DESKTOP_WEB_LISTING"
+    );
+    const json = await data.json();
+
+    const cards = json?.data?.cards || [];
+    let restaurants = [];
+
+    for (const card of cards) {
+      if (
+        card?.card?.card?.gridElements?.infoWithStyle?.restaurants
+      ) {
+        restaurants =
+          card.card.card.gridElements.infoWithStyle.restaurants;
+        break;
+      }
+    }
+
+    setListOfRestraunt(restaurants || []);
+    setFilteredRestaurant(restaurants || []);
+  };
+
+  if (onlineStatus === false)
+    return (
+      <h1>
+        Looks like you're offline!! Please check your internet connection.
+      </h1>
+    );
+
+  if (!isLoggedIn) {
+    return (
+      <div className="text-center mt-20 text-2xl font-semibold text-red-600">
+        User Logged Out Successfully !!!
+      </div>
+    );
+  }
+
+  return listOfRestaurants.length === 0 ? (
+    <Shimmer />
+  ) : (
+    <div className="body p-4">
+      {/* Filter/Search Section */}
+      <div className="filter flex flex-wrap gap-4 mb-6">
+        <div className="search flex items-center gap-2">
+          <input
+            type="text"
+            data-testid="searchInput"
+            className="border border-solid border-black p-2"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Search Restaurants"
+          />
+          <button
+            className="px-4 py-2 bg-green-100 rounded-lg"
+            onClick={() => {
+              const filtered = listOfRestaurants.filter((res) =>
+                res.info.name.toLowerCase().includes(searchText.toLowerCase())
+              );
+              setFilteredRestaurant(filtered);
+            }}
+          >
+            Search
+          </button>
         </div>
+
+        <button
+          className="px-4 py-2 bg-gray-100 rounded-lg"
+          onClick={() => {
+            const filteredList = listOfRestaurants.filter(
+              (res) => res.info.avgRating > 4
+            );
+            setFilteredRestaurant(filteredList);
+          }}
+        >
+          Top Rated Restaurants
+        </button>
+
+        <div className="flex items-center gap-2">
+          <label>UserName:</label>
+          <input
+            className="border border-black p-2"
+            value={loggedInUser}
+            onChange={(e) => setUserName(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Restaurant Cards Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {filteredRestaurant.length === 0 ? (
+          <p className="text-center w-full col-span-full text-red-500">
+            No restaurants match your search.
+          </p>
+        ) : (
+          filteredRestaurant.map((restaurant) => (
+            <Link
+              key={restaurant?.info.id}
+              to={"/restaurants/" + restaurant?.info.id}
+            >
+              {restaurant?.info.promoted ? (
+                <RestaurantCardPromoted resData={restaurant?.info} />
+              ) : (
+                <RestaurantCard resData={restaurant?.info} />
+              )}
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );
 };
 
-// Higher Order Component to add 'Promoted' label
-export const withPromtedLabel = (RestaurantCard) => {
-  return (props) => (
-    <div className="relative">
-      <label className="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded">
-        Promoted
-      </label>
-      <RestaurantCard {...props} />
-    </div>
-  );
-};
-
-export default RestaurantCard;
+export default Body;
