@@ -1,78 +1,61 @@
-import React, { lazy, Suspense } from "react";
-import ReactDOM from "react-dom/client";
-import Header from "./components/Header";
-import Body from "./components/Body";
-import Contact from "./components/Contact";
-import Error from "./components/Error";
-import RestaurantMenu from "./components/RestaurantMenu";
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import { Provider } from "react-redux";
-import appStore from "./utils/appStore";
-import Cart from "./components/Cart";
-import { UserContextProvider } from "./utils/UserContext";
-import LandingPage from "./components/LandingPage";
-import Register from "./components/Register";
-import Login from "./components/Login";
+/* src/App.css */
 
-const Grocery = lazy(() => import("./components/Grocery"));
-const About = lazy(() => import("./components/About"));
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #a8edea, #fed6e3);
+  overflow-x: hidden;
+}
 
-const AppLayout = () => {
-  return (
-    <Provider store={appStore}>
-      <UserContextProvider>
-        <div className="app-container">
-          <Header />
-          <div className="outlet-wrapper">
-            <Outlet />
-          </div>
-        </div>
-      </UserContextProvider>
-    </Provider>
-  );
-};
+/* Landing Page Styling */
+.landing-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #74ebd5, #acb6e5);
+  padding: 20px;
+}
 
-const appRouter = createBrowserRouter([
-  {
-    path: "/",
-    element: <LandingPage />,
-    errorElement: <Error />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/app",
-    element: <AppLayout />,
-    children: [
-      { index: true, element: <Body /> },
-      {
-        path: "about",
-        element: (
-          <Suspense fallback={<h1>Loading...</h1>}>
-            <About />
-          </Suspense>
-        ),
-      },
-      { path: "contact", element: <Contact /> },
-      {
-        path: "grocery",
-        element: (
-          <Suspense fallback={<h1>Loading...</h1>}>
-            <Grocery />
-          </Suspense>
-        ),
-      },
-      { path: "restaurants/:resId", element: <RestaurantMenu /> },
-      { path: "cart", element: <Cart /> },
-    ],
-  },
-]);
+.landing-card {
+  background: white;
+  padding: 40px 60px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 100%;
+}
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={appRouter} />);
+.btn-primary {
+  padding: 12px 28px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #005fa3;
+}
+
+/* App layout after login */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.outlet-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
