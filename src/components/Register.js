@@ -1,6 +1,6 @@
-// src/components/Register.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Register.css"; // ✅ Importing external CSS
 
 const Register = () => {
   const navigate = useNavigate();
@@ -12,11 +12,7 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // ✅ Load existing users from localStorage or create empty array
     const users = JSON.parse(localStorage.getItem("users") || "[]");
-
-    // ✅ Optional: Prevent duplicate usernames
     const alreadyExists = users.some(
       (u) => u.username === userDetails.username
     );
@@ -24,20 +20,18 @@ const Register = () => {
       alert("Username already exists. Please choose a different one.");
       return;
     }
-
-    // ✅ Add new user and store in localStorage
     users.push(userDetails);
     localStorage.setItem("users", JSON.stringify(users));
-
     console.log("Registered User:", userDetails);
-    navigate("/login"); // 👈 redirect after successful registration
+    navigate("/login");
   };
 
   return (
-    <div className="container">
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="register-container">
+      <form className="register-form" onSubmit={handleSubmit}>
+        <h2 className="text-2xl font-bold mb-4 text-center">SignUp</h2>
         <input
+          className="register-input"
           placeholder="Username"
           onChange={(e) =>
             setUserDetails({ ...userDetails, username: e.target.value })
@@ -45,6 +39,7 @@ const Register = () => {
           required
         />
         <input
+          className="register-input"
           placeholder="Email"
           onChange={(e) =>
             setUserDetails({ ...userDetails, email: e.target.value })
@@ -52,6 +47,7 @@ const Register = () => {
           required
         />
         <input
+          className="register-input"
           placeholder="Password"
           type="password"
           onChange={(e) =>
@@ -59,7 +55,9 @@ const Register = () => {
           }
           required
         />
-        <button type="submit">Register</button>
+        <button className="register-button" type="submit">
+          Register
+        </button>
       </form>
     </div>
   );
