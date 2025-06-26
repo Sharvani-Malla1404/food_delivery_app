@@ -1,7 +1,4 @@
-import RestaurantCard, {
-  withPromtedLabel,
-  withTopRatedBadge,
-} from "./RestaurantCard";
+import RestaurantCard, { withPromtedLabel } from "./RestaurantCard";
 import { useState, useEffect, useContext } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
@@ -15,6 +12,9 @@ const Body = () => {
 
   const { loggedInUser, setUserName, isLoggedIn } = useContext(UserContext);
   const onlineStatus = useOnlineStatus();
+
+  // ✅ Wrap RestaurantCard with HOC
+  const RestaurantCardPromoted = withPromtedLabel(RestaurantCard);
 
   useEffect(() => {
     fetchData();
@@ -116,26 +116,18 @@ const Body = () => {
             No restaurants match your search.
           </p>
         ) : (
-          filteredRestaurant.map((restaurant) => {
-            let CardToRender = RestaurantCard;
-
-            if (restaurant?.info.promoted) {
-              CardToRender = withPromtedLabel(CardToRender);
-            }
-
-            if (restaurant?.info.avgRating >= 4.5) {
-              CardToRender = withTopRatedBadge(CardToRender);
-            }
-
-            return (
-              <Link
-                key={restaurant?.info.id}
-                to={`/app/restaurants/${restaurant?.info.id}`}
-              >
-                <CardToRender resData={restaurant?.info} />
-              </Link>
-            );
-          })
+          filteredRestaurant.map((restaurant) => (
+            <Link
+              key={restaurant?.info.id}
+              to={`/app/restaurants/${restaurant?.info.id}`}
+            >
+              {restaurant?.info.promoted ? (
+                <RestaurantCardPromoted resData={restaurant?.info} />
+              ) : (
+                <RestaurantCard resData={restaurant?.info} />
+              )}
+            </Link>
+          ))
         )}
       </div>
     </div>
