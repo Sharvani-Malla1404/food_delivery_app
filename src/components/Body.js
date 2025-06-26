@@ -1,4 +1,7 @@
-import RestaurantCard, { withPromtedLabel } from "./RestaurantCard";
+import RestaurantCard, {
+  withPromtedLabel,
+  withTopRatedBadge,
+} from "./RestaurantCard";
 import { useState, useEffect, useContext } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
@@ -10,7 +13,6 @@ const Body = () => {
   const [filteredRestaurant, setFilteredRestaurant] = useState([]);
   const [searchText, setSearchText] = useState("");
 
-  const RestaurantCardPromoted = withPromtedLabel(RestaurantCard);
   const { loggedInUser, setUserName, isLoggedIn } = useContext(UserContext);
   const onlineStatus = useOnlineStatus();
 
@@ -23,12 +25,16 @@ const Body = () => {
       "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9351929&lng=77.62448069999999&page_type=DESKTOP_WEB_LISTING"
     );
     const json = await data.json();
+
     const cards = json?.data?.cards || [];
     let restaurants = [];
 
     for (const card of cards) {
-      if (card?.card?.card?.gridElements?.infoWithStyle?.restaurants) {
-        restaurants = card.card.card.gridElements.infoWithStyle.restaurants;
+      if (
+        card?.card?.card?.gridElements?.infoWithStyle?.restaurants
+      ) {
+        restaurants =
+          card.card.card.gridElements.infoWithStyle.restaurants;
         break;
       }
     }
@@ -39,7 +45,7 @@ const Body = () => {
 
   if (onlineStatus === false) {
     return (
-      <h1 className="text-center text-xl mt-10 text-red-600">
+      <h1 className="text-center mt-10 text-red-600 text-xl">
         Looks like you're offline!! Please check your internet connection.
       </h1>
     );
@@ -56,14 +62,14 @@ const Body = () => {
   return listOfRestaurants.length === 0 ? (
     <Shimmer />
   ) : (
-    <div className="body-container p-4 max-w-7xl mx-auto">
+    <div className="body p-4">
       {/* Filter/Search Section */}
-      <div className="filter flex flex-wrap gap-4 mb-6 items-center justify-center">
+      <div className="filter flex flex-wrap gap-4 mb-6">
         <div className="search flex items-center gap-2">
           <input
             type="text"
             data-testid="searchInput"
-            className="border border-solid border-black p-2 rounded"
+            className="border border-solid border-black p-2"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             placeholder="Search Restaurants"
@@ -94,9 +100,9 @@ const Body = () => {
         </button>
 
         <div className="flex items-center gap-2">
-          <label className="font-medium">User:</label>
+          <label>UserName:</label>
           <input
-            className="border border-black p-2 rounded"
+            className="border border-black p-2"
             value={loggedInUser}
             onChange={(e) => setUserName(e.target.value)}
           />
@@ -110,18 +116,26 @@ const Body = () => {
             No restaurants match your search.
           </p>
         ) : (
-          filteredRestaurant.map((restaurant) => (
-            <Link
-              key={restaurant?.info.id}
-              to={`/app/restaurants/${restaurant?.info.id}`}
-            >
-              {restaurant?.info.promoted ? (
-                <RestaurantCardPromoted resData={restaurant?.info} />
-              ) : (
-                <RestaurantCard resData={restaurant?.info} />
-              )}
-            </Link>
-          ))
+          filteredRestaurant.map((restaurant) => {
+            let CardToRender = RestaurantCard;
+
+            if (restaurant?.info.promoted) {
+              CardToRender = withPromtedLabel(CardToRender);
+            }
+
+            if (restaurant?.info.avgRating >= 4.5) {
+              CardToRender = withTopRatedBadge(CardToRender);
+            }
+
+            return (
+              <Link
+                key={restaurant?.info.id}
+                to={`/app/restaurants/${restaurant?.info.id}`}
+              >
+                <CardToRender resData={restaurant?.info} />
+              </Link>
+            );
+          })
         )}
       </div>
     </div>
