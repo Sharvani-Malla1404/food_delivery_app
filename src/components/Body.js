@@ -81,26 +81,6 @@ const Body = () => {
           </button>
         </div>
 
-        <button
-          className="px-4 py-2 bg-gray-100 rounded-lg"
-          onClick={() => {
-            const filteredList = listOfRestaurants.filter(
-              (res) => res.info.avgRating > 4
-            );
-            setFilteredRestaurant(filteredList);
-          }}
-        >
-          Top Rated Restaurants
-        </button>
-
-        <div className="flex items-center gap-2">
-          <label className="font-medium">User:</label>
-          <input
-            className="border border-black p-2 rounded"
-            value={loggedInUser}
-            onChange={(e) => setUserName(e.target.value)}
-          />
-        </div>
       </div>
 
       {/* Restaurant Cards Section */}
