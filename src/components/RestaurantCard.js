@@ -55,7 +55,11 @@ const RestaurantCard = (props) => {
             FOR TWO
           </p>
           <p>{sla?.deliveryTime || 30} mins</p>
-          <p className="text-gray-500 text-xs">User: {loggedInUser}</p>
+
+          {/* Show this only if user is NOT logged in */}
+          {!loggedInUser && (
+            <p className="text-gray-500 text-xs">User: Jahnavi</p>
+          )}
         </div>
       </div>
     </div>
