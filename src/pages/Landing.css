@@ -1,0 +1,91 @@
+/* Landing.css */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Fully prevent body scroll */
+}
+
+.landing-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom right, #3e3e3e, #5c5c5c);
+  box-sizing: border-box;
+  padding: 1rem;
+}
+
+.landing-content {
+  text-align: center;
+  background-color: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden; /* Prevent scrollbars inside */
+}
+
+.landing-hero-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  display: block;
+}
+
+.landing-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.landing-subtitle {
+  font-size: 1.1rem;
+  color: #777;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.landing-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.7rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.register-btn {
+  background-color: #ff5722;
+  color: white;
+}
+
+.register-btn:hover {
+  background-color: #e64a19;
+}
+
+.login-btn {
+  background-color: #ff5722;
+  color: white;
+  border: none;
+}
+
+.login-btn:hover {
+  background-color: #e64a19;
+}
