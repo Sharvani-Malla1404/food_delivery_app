@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveUser } from "../utils/localStorageUtils";
+import "./Register.css"; // Added CSS import
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -18,33 +19,39 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center border-2 border-black">
-      <h1 className="text-xl mb-5">REGISTER</h1>
-      <div className="space-y-4">
-        <input
-          type="text"
-          placeholder="Username"
-          className="border border-black p-2"
-          onChange={(e) => setForm({ ...form, username: e.target.value })}
-        />
-        <input
-          type="email"
-          placeholder="Email ID"
-          className="border border-black p-2"
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="border border-black p-2"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-        <button
-          className="border-2 border-black px-6 py-1"
-          onClick={handleRegister}
-        >
-          REGISTER
+    <div className="register-page">
+      <div className="register-overlay"></div>
+
+      <div className="register-card">
+        <button onClick={() => navigate("/")} className="back-button">
+          ← Back
         </button>
+
+        <h1 className="register-title">Register</h1>
+
+        <div className="space-y-4">
+          <input
+            type="text"
+            placeholder="Username"
+            className="register-input"
+            onChange={(e) => setForm({ ...form, username: e.target.value })}
+          />
+          <input
+            type="email"
+            placeholder="Email ID"
+            className="register-input"
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="register-input"
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
+          <button className="register-button" onClick={handleRegister}>
+            Register
+          </button>
+        </div>
       </div>
     </div>
   );
