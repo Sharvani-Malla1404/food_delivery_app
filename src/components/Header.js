@@ -1,11 +1,14 @@
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import UserContext from "../utils/UserContext";
-import "./Header.css"; // ✅ Import the CSS file we'll create
+import "./Header.css";
 
 const Header = () => {
+  const navigate = useNavigate();
   const { loggedInUser, setUserName, isLoggedIn, setIsLoggedIn } = useContext(UserContext);
+
+  // ✅ FIXED: Get cartItems from store.cart.items
   const cartItems = useSelector((store) => store.cart.items);
 
   const handleLoginLogout = () => {
@@ -15,6 +18,7 @@ const Header = () => {
     } else {
       setIsLoggedIn(true);
       setUserName("Jahnavi");
+      navigate("/login");
     }
   };
 
@@ -38,7 +42,6 @@ const Header = () => {
             <span style={{ fontSize: "20px" }}>{isLoggedIn ? "✅" : "🔴"}</span>
           </li>
 
-          {/* ✅ Updated NavLink path to /home/about */}
           <li>
             <NavLink
               to="/home/about"
@@ -59,19 +62,10 @@ const Header = () => {
 
           <li>
             <NavLink
-              to="/home/grocery"
-              className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
-            >
-              Grocery
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
               to="/home/cart"
               className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
             >
-              Cart - ({cartItems.length} items)
+              Cart - ({cartItems.length || 0} items)
             </NavLink>
           </li>
 
@@ -90,4 +84,3 @@ const Header = () => {
 };
 
 export default Header;
-
