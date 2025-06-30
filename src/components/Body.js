@@ -91,14 +91,8 @@ const Body = () => {
         </div>
       </div>
 
-      {/* Restaurant Cards Section - Scrollable */}
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 overflow-y-auto px-2"
-        style={{
-          maxHeight: "70vh",
-          paddingRight: "8px",
-        }}
-      >
+      {/* Restaurant Cards Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredRestaurant.length === 0 ? (
           <p className="text-center w-full col-span-full text-red-500">
             No restaurants match your search.
@@ -107,7 +101,7 @@ const Body = () => {
           filteredRestaurant.map((restaurant) => (
             <Link
               key={restaurant?.info.id}
-              to={`/app/restaurants/${restaurant?.info.id}`}
+              to={`/home/restaurants/${restaurant?.info.id}`} // ✅ Corrected route
             >
               {restaurant?.info.promoted ? (
                 <RestaurantCardPromoted resData={restaurant?.info} />
