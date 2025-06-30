@@ -1,23 +1,36 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AboutUs.css";
+import UserContext from "../utils/UserContext"; // ✅ Import context
 
 const AboutUs = () => {
   const navigate = useNavigate();
+  const { isLoggedIn } = useContext(UserContext); // ✅ Access login state
 
   const handleBack = () => {
-    navigate(-1);
+    navigate("/home"); // Or navigate("/home") if you prefer
   };
 
   const goToContact = () => {
     navigate("/home/contact");
   };
 
+  // ✅ If not logged in, show only logout message (no back button)
+  if (!isLoggedIn) {
+  return (
+    <div className="about-container">
+      <div className="logout-message">User Logged Out Successfully</div>
+    </div>
+  );
+}
+
+
+  // ✅ Show About content only if logged in
   return (
     <div className="about-container">
       {/* 🔙 Back Button */}
       <button onClick={handleBack} className="back-button">
-        ⬅️ Back
+        ⬅️ Back to Home
       </button>
 
       <h1>About Our Food Delivery App</h1>
@@ -54,7 +67,6 @@ const AboutUs = () => {
         </a>
       </p>
 
-      {/* 📞 Contact Us Floating Button */}
       <button onClick={goToContact} className="contact-button">
         📞 Contact Us
       </button>
